@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import './index.css'
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from '@chatscope/chat-ui-kit-react';
 
@@ -52,7 +52,7 @@ function App() {
 
   return (
     <div className="App">
-      <div style={{ position:"relative", height: "100vh", width: "100vw"  }}>
+      <div style={{ position:"relative", height: "100%", width: "100%"  }}>
         <MainContainer>
           <ChatContainer>       
             <MessageList 
