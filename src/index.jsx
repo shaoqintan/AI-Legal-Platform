@@ -1,27 +1,16 @@
 import { useState } from 'react'
-import './App.css'
+import './index.css'
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from '@chatscope/chat-ui-kit-react';
 
-
-const API_KEY = import.meta.env.VITE_API_KEY;
-const systemMessage = { 
-  "role": "system", "content": "Explain things like you are a law consultant/ lawyer talking to your client."
-}
-
 function App() {
   const [messages, setMessages] = useState([
-    {
-      message: "Hello, I'm LawAI! Ask me anything!",
-      sentTime: "just now",
-      sender: "LawAI"
-    }
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
   const handleSend = async (message) => {
     const newMessage = {
-      message,
+      message: message,
       direction: 'outgoing',
       sender: "user"
     };
@@ -31,36 +20,21 @@ function App() {
     setMessages(newMessages);
 
     setIsTyping(true);
-    await processMessageToLawAI(newMessages);
+    await processMessageToLawAI(newMessages, message);
   };
 
-  async function processMessageToLawAI(chatMessages) { // messages is an array of messages
-
-
-    let apiMessages = chatMessages.map((messageObject) => {
-      let role = "";
-      if (messageObject.sender === "LawAI") {
-        role = "assistant";
-      } else {
-        role = "user";
-      }
-      return { role: role, content: messageObject.message}
-    });
+  async function processMessageToLawAI(chatMessages, newChatMessage) { // messages is an array of messages
 
 
     const apiRequestBody = {
-      "model": "gpt-3.5-turbo",
-      "messages": [
-        systemMessage,
-        ...apiMessages
-      ]
+      "history":chatMessages.map((msg)=>msg.message),
+      "question":newChatMessage
     }
 
-    await fetch("https://api.openai.com/v1/chat/completions", 
+    await fetch("https://malai-backend.up.railway.app/chat", 
     {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + API_KEY,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(apiRequestBody)
@@ -69,7 +43,7 @@ function App() {
     }).then((data) => {
       console.log(data);
       setMessages([...chatMessages, {
-        message: data.choices[0].message.content,
+        message: data.text,
         sender: "LawAI"
       }]);
       setIsTyping(false);
@@ -78,7 +52,7 @@ function App() {
 
   return (
     <div className="App">
-      <div style={{ position:"relative", height: "800px", width: "700px"  }}>
+      <div style={{ position:"relative", height: "100%", width: "100%"  }}>
         <MainContainer>
           <ChatContainer>       
             <MessageList 
