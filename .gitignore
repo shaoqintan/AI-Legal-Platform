@@ -25,3 +25,14 @@ dist-ssr
 
 # Ignore .env files
 .env
+
+# Local Netlify folder
+.netlify
+
+# Custom gitignore
+/Frontend/.netlify
+/Frontend/dist
+/Frontend/node_modules
+/Server/dist
+/Server/node_modules
+/Server/.env
